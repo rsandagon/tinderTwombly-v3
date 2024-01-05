@@ -1,0 +1,181 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 440067385632944,
+      "steps": 25,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m_sde_gpu",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "photon_v1.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": ",beautiful young cute blonde woman supermodel,elegant, (looking at viewer, eye contact. beautiful eyes, perfect face:1.3), (wearing black night gown:1.2), silk, (masterpiece, best quality, incredible detail, perfect lighting, ultra high skin detail:1.2), perfect face,",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "amateur, bad art, (low quality, worst quality, normal quality, blurry:1.3), deformed body, conjoined, mutant, ugly,",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "13": {
+    "inputs": {
+      "model_name": "4x-ESRGAN.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Load Upscale Model"
+    }
+  },
+  "14": {
+    "inputs": {
+      "upscale_model": [
+        "13",
+        0
+      ],
+      "image": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Upscale Image (using Model)"
+    }
+  },
+  "15": {
+    "inputs": {
+      "enabled": true,
+      "swap_model": "inswapper_128.onnx",
+      "facedetection": "retinaface_resnet50",
+      "face_restore_model": "codeformer.pth",
+      "face_restore_visibility": 1,
+      "codeformer_weight": 0.5,
+      "detect_gender_source": "no",
+      "detect_gender_input": "no",
+      "source_faces_index": "0",
+      "input_faces_index": "0",
+      "console_log_level": 1,
+      "input_image": [
+        "8",
+        0
+      ],
+      "source_image": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "ReActorFaceSwap",
+    "_meta": {
+      "title": "ReActor - Fast Face Swap"
+    }
+  },
+  "17": {
+    "inputs": {
+      "image": "scar.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "18": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "19": {
+    "inputs": {
+      "images": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  }
+}

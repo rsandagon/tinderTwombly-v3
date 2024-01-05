@@ -1,0 +1,33 @@
+{
+  "name": "tinyllama-tindertwombly-chat",
+  "version": "1.0.0",
+  "description": "a simple chat utilizing tinyllama with voice support and image generation AI. This is the 3rd iteration of my TinderTwonbly AI chat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsandagon/tinyllama-tindertwombly-chat.git"
+  },
+  "keywords": [
+    "AI",
+    "chatbot"
+  ],
+  "author": "Ryan Sandagon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rsandagon/tinyllama-tindertwombly-chat/issues"
+  },
+  "homepage": "https://github.com/rsandagon/tinyllama-tindertwombly-chat#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "http-proxy": "^1.18.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

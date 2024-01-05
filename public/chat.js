@@ -31,6 +31,10 @@ function initChat(){
     scrollToBot();
 }
 
+function clearCache(){
+    localStorage.removeItem("chatHistory");
+}
+
 function scrollToBot(){
     setTimeout(()=>{
         const cb = document.getElementById('chatBox');

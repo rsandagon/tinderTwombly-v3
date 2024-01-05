@@ -25,7 +25,7 @@ function initChat(){
     let chatForm = document.getElementById("chatForm");
     chatForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        document.getElementById("submitBtn").click();
+        // document.getElementById("submitBtn").click();
     });
 
     scrollToBot();

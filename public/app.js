@@ -179,7 +179,6 @@ function displayPhotoToChat(imgURL){
   let message = `<img onclick="displayImg('${imgURL}')"class="w-2/4 h-auto" src="${imgURL}" />`;
   saveChat(message,false);
   addChatPop(message,false);
-  addChatPop();
 }
 
 //Image display

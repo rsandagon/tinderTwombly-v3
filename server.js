@@ -1,3 +1,17 @@
+/**
+ * server.js
+ * This handles the proxy to chat and image generation services
+ *
+ *
+ * @license https://github.com/rsandagon/tinderTwombly-v3/blob/main/LICENSE
+ * @version 0.1
+ * @author  Rsandagon, https://github.com/rsandagon
+ * @updated 2024-01-07
+ * @link    https://github.com/rsandagon/tinderTwombly-v3
+ *
+ *
+ */
+
 const http = require('http');
 const httpProxy = require('http-proxy');
 const express = require('express');
@@ -13,6 +27,8 @@ require('dotenv').config()
 const NGROK_AUTHTOKEN = process.env.NGROK_AUTHTOKEN;
 const USER = process.env.USER;
 const PASSWORD = process.env.PASSWORD;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
 const isTunneling = arguments[2]=='tunnel';
 
 // Proxy for WebSocket server
@@ -39,6 +55,17 @@ const chatProxy = httpProxy.createProxyServer({
     secure: isTunneling ? true : false, // Adjust if the HTTP server uses HTTPS
   });
 
+// Proxy for OpenAI Chat format
+const openAIProxy = httpProxy.createProxyServer({
+  target: 'http://127.0.0.1:5000/v1/chat/',
+  headers: {
+    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  changeOrigin: true,
+  secure: isTunneling ? true : false, // Adjust if the HTTP server uses HTTPS
+});
+
 const completionsProxy = httpProxy.createProxyServer({
     target: 'http://127.0.0.1:5000/v1/completions/',
     changeOrigin: true,
@@ -53,9 +80,16 @@ app.use('/completions', (req, res) => {
 });
 
 app.use('/chat', (req, res) => {
-  chatProxy.web(req, res, () => {
+  if(OPENROUTER_API_KEY){
+    openAIProxy.web(req, res, () => {
+      console.log('HTTP request proxied to OpenAI server');
+    });
+  }else{
+    chatProxy.web(req, res, () => {
       console.log('HTTP request proxied to Chat server');
-  });
+    });
+  }
+
 });
 
 

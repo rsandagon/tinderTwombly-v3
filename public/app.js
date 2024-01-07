@@ -1,3 +1,18 @@
+/**
+ * app.js
+ * reused code from my other project, https://github.com/rsandagon/comfyui-batch-image-generation
+ * This handles image creation 
+ *
+ *
+ * @license https://github.com/rsandagon/tinderTwombly-v3/blob/main/LICENSE
+ * @version 0.1
+ * @author  Rsandagon, https://github.com/rsandagon
+ * @updated 2024-01-07
+ * @link    https://github.com/rsandagon/tinderTwombly-v3
+ *
+ *
+ */
+
 var myWebSocket;
 var COMFTY_URL = "/sd";
 var WS = `${(location.protocol !== 'https:')?'ws':'wss'}://${window.location.host}/ws`;

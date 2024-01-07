@@ -1,3 +1,17 @@
+/**
+ * chat.js
+ * This handles the chat functionality
+ *
+ *
+ * @license https://github.com/rsandagon/tinderTwombly-v3/blob/main/LICENSE
+ * @version 0.1
+ * @author  Rsandagon, https://github.com/rsandagon
+ * @updated 2024-01-07
+ * @link    https://github.com/rsandagon/tinderTwombly-v3
+ *
+ *
+ */
+
 var isBusy = false;
 var audio = '';
 var AI_NAME = 'Liza';

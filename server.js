@@ -27,7 +27,8 @@ require('dotenv').config()
 const NGROK_AUTHTOKEN = process.env.NGROK_AUTHTOKEN;
 const USER = process.env.USER;
 const PASSWORD = process.env.PASSWORD;
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPEN_AI_URL = process.env.OPEN_AI_URL;
+const OPEN_AI_KEY = process.env.OPEN_AI_KEY;
 
 const isTunneling = arguments[2]=='tunnel';
 
@@ -57,9 +58,14 @@ const chatProxy = httpProxy.createProxyServer({
 
 // Proxy for OpenAI Chat format
 const openAIProxy = httpProxy.createProxyServer({
-  target: 'http://127.0.0.1:5000/v1/chat/',
+  stream:false,
+  model:"mistralai/mistral-7b-instruct",
+  max_tokens:300,
+  temperature:0.88,
+  top_p:1,
+  target: OPEN_AI_URL,
   headers: {
-    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+    "Authorization": `Bearer ${OPEN_AI_KEY}`,
     "Content-Type": "application/json"
   },
   changeOrigin: true,
@@ -80,16 +86,15 @@ app.use('/completions', (req, res) => {
 });
 
 app.use('/chat', (req, res) => {
-  if(OPENROUTER_API_KEY){
+  if(OPEN_AI_KEY.trim().length === 0){
+    chatProxy.web(req, res, () => {
+      console.log('HTTP request proxied to Chat server');
+    });    
+  }else{
     openAIProxy.web(req, res, () => {
       console.log('HTTP request proxied to OpenAI server');
     });
-  }else{
-    chatProxy.web(req, res, () => {
-      console.log('HTTP request proxied to Chat server');
-    });
   }
-
 });
 
 
@@ -115,8 +120,6 @@ server.on('upgrade', function (req, socket, head) {
 // --AUTHENTICATION
 function authentication(req, res, next) {
   const authheader = req.headers.authorization;
-  console.log(req.headers);
-
   if (!authheader) {
       let err = new Error('You are not authenticated!');
       res.setHeader('WWW-Authenticate', 'Basic');
@@ -130,7 +133,6 @@ function authentication(req, res, next) {
   const pass = auth[1];
 
   if (user == USER && pass == PASSWORD) {
-      // If Authorized user
       next();
   } else {
       let err = new Error('You are not authenticated!');

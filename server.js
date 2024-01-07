@@ -57,19 +57,16 @@ const chatProxy = httpProxy.createProxyServer({
   });
 
 // Proxy for OpenAI Chat format
+
 const openAIProxy = httpProxy.createProxyServer({
-  stream:false,
-  model:"mistralai/mistral-7b-instruct",
-  max_tokens:300,
-  temperature:0.88,
-  top_p:1,
   target: OPEN_AI_URL,
   headers: {
     "Authorization": `Bearer ${OPEN_AI_KEY}`,
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "X-Title": "TwomblyV3"
   },
   changeOrigin: true,
-  secure: isTunneling ? true : false, // Adjust if the HTTP server uses HTTPS
+  secure: true, // Adjust if the HTTP server uses HTTPS
 });
 
 const completionsProxy = httpProxy.createProxyServer({
@@ -124,7 +121,7 @@ function authentication(req, res, next) {
       let err = new Error('You are not authenticated!');
       res.setHeader('WWW-Authenticate', 'Basic');
       err.status = 401;
-      return next(err)
+      return next(err);
   }
 
   const auth = new Buffer.from(authheader.split(' ')[1],

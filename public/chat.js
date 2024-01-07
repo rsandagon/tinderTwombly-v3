@@ -109,7 +109,8 @@ function filterChat(message){
 }
 
 function saveChat(message,fromMe){
-    savedChats.push({'content':message, 'role':(fromMe?'user':'char')});
+    //NOTE: for character model, replace `assistant` with `char`
+    savedChats.push({'content':message, 'role':(fromMe?'user':'assistant')});
 
     let st = "["
     savedChats.forEach((item,index)=>{
@@ -165,11 +166,15 @@ function setPayload(){
         }
     })
     st = st.concat("]");
-
+    //replace model with
     return `{
         "messages": ${st},
         "mode": "chat-instruct",
-        "character": "Default"
+        "character": "Default",
+        "stream": false,
+        "max_tokens": 100,
+        "temperature": 0.88,
+        "top_p": 1
       }`
 }
 

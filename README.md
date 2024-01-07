@@ -14,6 +14,7 @@ git clone git@github.com:rsandagon/comfyui-batch-image-generation.git
 ```
 1. Run `npm install` to install packages
 1. Run `npm start` to run the app
+*If you want to use tunneling via ngrok, then run `npm start tunnel`*
 
 *⚠️ Note: This application requires a previously running ComfyUI server and text-generation-web-ui (with tinyllama and coqui_tts). Please see [ComfyUI Installation](https://github.com/comfyanonymous/ComfyUI#installing) and [text-generation-webui](https://github.com/oobabooga/text-generation-webui) for instructions. *
 

@@ -13,12 +13,17 @@ function initChat(){
         parsedCh = JSON.parse(chatHistory);
         parsedCh.forEach(chat => {
             savedChats.push(chat);
-            addChatPop(chat['message'],chat['fromMe']);
+            addChatPop(chat['content'], (chat['role']=='user'));
         });
     }else{
         //init chatpop
-        saveChat('Hey, hope your not busy',false);
-        addChatPop('Hey, hope your not busy',false);
+        saveChat('Hey, thinking of you right now...',false);
+        addChatPop('Hey, thinking of you right now...',false);
+        //init cache for context (change as needed)
+        saveChat(`You do? I miss you`,true);
+        saveChat('I miss you too',false);
+        saveChat(`What do you want to do?`,true);
+        saveChat(`Let's just enjoy the chat`,false);
     }
     
     //init submit action
@@ -27,8 +32,6 @@ function initChat(){
         e.preventDefault();
         // document.getElementById("submitBtn").click();
     });
-
-    scrollToBot();
 }
 
 function clearCache(){
@@ -63,7 +66,7 @@ function chat(){
     if(message.includes("send") && (message.includes("pic") || message.includes("photo") || message.includes("picture"))){
         // avoid multiple request on image generation
         if(!isSendingPhoto && !isBusy){
-            processPrompt(message);
+            processPrompt();
         }
 
         //simulate a sending photo
@@ -71,29 +74,28 @@ function chat(){
     }else{
         sendChat(message);
     }
-    
-    scrollToBot();
+    document.getElementById('chatInput').value = '';
 }
 
 function reply(message){
     message = filterChat(message);
     saveChat(message,false);
     addChatPop(message,false);
-    scrollToBot();
 }
 
 function filterChat(message){
-    //TODO: regex
+    //UI fix to remove hallucinations in some models
     message = message.replaceAll('[', '');
     message = message.replaceAll(']', '');
     message = message.replaceAll('{', '');
     message = message.replaceAll('}', '');
     message = message.replaceAll('"', '');
+    message.split(":")[0];
     return message;    
 }
 
 function saveChat(message,fromMe){
-    savedChats.push({'message':message,'fromMe':fromMe});
+    savedChats.push({'content':message, 'role':(fromMe?'user':'char')});
 
     let st = "["
     savedChats.forEach((item,index)=>{
@@ -124,33 +126,44 @@ function addChatPop(message,fromMe){
                         <p class="text-4xl lg:text-2xl font-normal py-2.5 text-gray-900 dark:text-white">${message}</p>
                     </div>
                 </div>`
+    scrollToBot();
 }
 
 function showLoader(){
-    setTimeout(()=>addChatPop('<img class="w-5 h-5" src="img/three-dots.svg" />',false),1000);    
+    setTimeout(()=>{
+        addChatPop('<img class="w-5 h-5" src="img/three-dots.svg" />',false);scrollToBot();},1000);
+        
 }
 
 function hideLoader(){
     const cb = document.getElementById('chatBox');
     const lastChild = cb.lastChild;
     cb.removeChild(lastChild);
-    
+}
+
+function setPayload(){
+    let st = "["
+    let tsaved = savedChats.slice(-5);
+    tsaved.forEach((item,index)=>{
+        st = st.concat(JSON.stringify(item));
+        if(index < (tsaved.length-1)){
+            st = st.concat(',');
+        }
+    })
+    st = st.concat("]");
+
+    return `{
+        "messages": ${st},
+        "mode": "chat-instruct",
+        "character": "Default"
+      }`
 }
 
 // API request
 async function sendChat(message){
     if(isBusy) return;
 
-    let payload = `{
-        "messages": [
-          {
-            "role": "user",
-            "content": "${message}"
-          }
-        ],
-        "mode": "chat",
-        "character": "Default"
-      }`;
+    let payload = setPayload();
     isBusy = true;
     showLoader();
 

@@ -1,6 +1,6 @@
 var myWebSocket;
 var COMFTY_URL = "/sd";
-var WS = `ws://${window.location.host}/ws`;
+var WS = `${(location.protocol !== 'https:')?'ws':'wss'}://${window.location.host}/ws`;
 var clientId = generateId(); //can be windows name
 var workflow = {};
 var isSendingPhoto = false;
@@ -118,8 +118,13 @@ function closeConn() {
   myWebSocket.close();
 }
 
-function processPrompt(description){
-  workflow["6"]["inputs"]["text"]
+function processPrompt(){
+  let description = ''
+  //prepare description from 5 previous chats
+  savedChats.forEach((item,index)=>{
+    description += item["content"]+' ';
+} )
+
   if (
     workflow["6"] &&
     workflow["6"]["inputs"] &&

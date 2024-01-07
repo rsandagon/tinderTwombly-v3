@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/rsandagon/tinyllama-tindertwombly-chat#readme",
   "dependencies": {
+    "@ngrok/ngrok": "^0.9.1",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "http": "^0.0.1-security",
     "http-proxy": "^1.18.1",
